@@ -1,17 +1,42 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.io.PrintWriter"%>
+<%@ page import="user.UserDAO"%>
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>강의평가 웹 사이트</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- 부트스트랩CSS 추가하기 -->
-	<link rel="stylesheet" href="./css/bootstrap.min.css">
-	<!-- 커스텀CSS 추가하기 -->
-	<link rel="stylesheet" href="./css/custom.css">
+<meta charset="UTF-8">
+<title>강의평가 웹 사이트</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- 부트스트랩CSS 추가하기 -->
+<link rel="stylesheet" href="./css/bootstrap.min.css">
+<!-- 커스텀CSS 추가하기 -->
+<link rel="stylesheet" href="./css/custom.css">
 </head>
 <body>
+	<%
+		String userID = null;
+		if (session.getAttribute("userID") != null) {
+			userID = (String) session.getAttribute("userID");
+		}
+		if (userID == null) {
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('로그인을 해주세요.');");
+			script.println("location.href='userLogin.jsp';");
+			script.println("</script>");
+			script.close();
+			return;
+		}
+		boolean emailChecked = new UserDAO().getUserEmailChecked(userID);
+		if (emailChecked == false) {
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("location.href='emailSendConfirm.jsp';");
+			script.println("</script>");
+			script.close();
+			return;
+		}
+	%>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="index.jsp">강의 평가 웹 사이트</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
@@ -25,10 +50,19 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="dropdown" data-toggle="dropdown">회원 관리</a>
 					<div class="dropdown-menu" aria-labelledby="dropdown">
+<%
+	if(userID==null){
+%>					
 						<a class="dropdown-item" href="userLogin.jsp">로그인</a>
 						<a class="dropdown-item" href="userJoin.jsp">회원가입</a>
+<%
+	}else{
+%>
 						<a class="dropdown-item" href="userLogout.jsp">로그아웃</a>
-					</div>				
+<%
+	} 
+%>						
+					</div>
 				</li>
 			</ul>
 			<form class="form-inline my-2 my-lg-0">
@@ -44,7 +78,7 @@
 				<option value="전공">전공</option>
 				<option value="교양">교양</option>
 				<option value="기타">기타</option>
-			</select>
+			</select> 
 			<input type="text" name="search" class="form-control mx-1 mt-2" placeholder="내용을 입력하세요.">
 			<button type="submit" class="btn btn-primary mx-1 mt-2">검색</button>
 			<a class="btn btn-primary mx-1 mt-2" data-toggle="modal" href="#registerModal">등록하기</a>
@@ -53,7 +87,9 @@
 		<div class="card bg-light mt-3">
 			<div class="card-header bg-light">
 				<div class="row">
-					<div class="col-8 text-left">컴퓨터개론&nbsp;<small>Chimy</small></div>
+					<div class="col-8 text-left">
+						컴퓨터개론&nbsp;<small>Chimy</small>
+					</div>
 					<div class="col-4 text-right">
 						종합 <span style="color: red;">A</span>
 					</div>
@@ -66,9 +102,9 @@
 				<p class="card-text">많은 도움이 된 것 같아요.</p>
 				<div class="row">
 					<div class="col-9 text-left">
-						성적 <span style="color: red;">A</span>
-						강의 <span style="color: red;">A</span>
-						친절 <span style="color: red;">A</span>
+						성적 <span style="color: red;">A</span> 
+						강의 <span style="color: red;">A</span> 
+						친절 <span style="color: red;">A</span> 
 						<span style="color: green;">(추천: 15)</span>
 					</div>
 					<div class="col-3 text-right">
@@ -81,7 +117,9 @@
 		<div class="card bg-light mt-3">
 			<div class="card-header bg-light">
 				<div class="row">
-					<div class="col-8 text-left">알고리즘&nbsp;<small>Chimchim</small></div>
+					<div class="col-8 text-left">
+						알고리즘&nbsp;<small>Chimchim</small>
+					</div>
 					<div class="col-4 text-right">
 						종합 <span style="color: red;">B</span>
 					</div>
@@ -94,9 +132,9 @@
 				<p class="card-text">훌륭한 강의를 해주셨지만 논문 쓰실 때 날카로우십니다.</p>
 				<div class="row">
 					<div class="col-9 text-left">
-						성적 <span style="color: red;">B</span>
-						강의 <span style="color: red;">A</span>
-						친절 <span style="color: red;">C</span>
+						성적 <span style="color: red;">B</span> 
+						강의 <span style="color: red;">A</span> 
+						친절 <span style="color: red;">C</span> 
 						<span style="color: green;">(추천: 2)</span>
 					</div>
 					<div class="col-3 text-right">
@@ -109,7 +147,9 @@
 		<div class="card bg-light mt-3">
 			<div class="card-header bg-light">
 				<div class="row">
-					<div class="col-8 text-left">프로그래밍언어&nbsp;<small>JM</small></div>
+					<div class="col-8 text-left">
+						프로그래밍언어&nbsp;<small>JM</small>
+					</div>
 					<div class="col-4 text-right">
 						종합 <span style="color: red;">C</span>
 					</div>
@@ -122,9 +162,9 @@
 				<p class="card-text">따라가기 너무 힘들어요.</p>
 				<div class="row">
 					<div class="col-9 text-left">
-						성적 <span style="color: red;">C</span>
-						강의 <span style="color: red;">D</span>
-						친절 <span style="color: red;">A</span>
+						성적 <span style="color: red;">C</span> 
+						강의 <span style="color: red;">D</span> 
+						친절 <span style="color: red;">A</span> 
 						<span style="color: green;">(추천: 8)</span>
 					</div>
 					<div class="col-3 text-right">
@@ -148,17 +188,17 @@
 					<form action="./evaluationRegisterAction.jsp" method="post">
 						<div class="form-row">
 							<div class="form-group col-sm-6">
-								<label>강의명</label>
+								<label>강의명</label> 
 								<input type="text" name="lectureName" class="form-control" maxlength="20">
 							</div>
 							<div class="form-group col-sm-6">
-								<label>교수명</label>
+								<label>교수명</label> 
 								<input type="text" name="professorName" class="form-control" maxlength="20">
 							</div>
 						</div>
 						<div class="form-row">
 							<div class="form-group col-sm-4">
-								<label>수강 연도</label>
+								<label>수강 연도</label> 
 								<select name="lectureYear" class="form-control">
 									<option value="2015">2015</option>
 									<option value="2016">2016</option>
@@ -174,7 +214,7 @@
 								</select>
 							</div>
 							<div class="form-group col-sm-4">
-								<label>수강 학기</label>
+								<label>수강 학기</label> 
 								<select name="semesterDivide" class="form-control">
 									<option value="1학기" selected>1학기</option>
 									<option value="여름학기">여름학기</option>
@@ -183,7 +223,7 @@
 								</select>
 							</div>
 							<div class="form-group col-sm-4">
-								<label>강의 구분</label>
+								<label>강의 구분</label> 
 								<select name="lectureDivide" class="form-control">
 									<option value="전공" selected>전공</option>
 									<option value="교양">교양</option>
@@ -192,7 +232,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label>제목</label>
+							<label>제목</label> 
 							<input type="text" name="evaluationTime" class="form-control" maxlength="30">
 						</div>
 						<div class="form-group">
@@ -201,7 +241,7 @@
 						</div>
 						<div class="form-row">
 							<div class="form-group col-sm-3">
-								<label>종합</label>
+								<label>종합</label> 
 								<select name="totalScore" class="form-control">
 									<option value="A" selected>A</option>
 									<option value="B">B</option>
@@ -209,9 +249,9 @@
 									<option value="D">D</option>
 									<option value="F">F</option>
 								</select>
-							</div>	
+							</div>
 							<div class="form-group col-sm-3">
-								<label>성적</label>
+								<label>성적</label> 
 								<select name="creditScore" class="form-control">
 									<option value="A" selected>A</option>
 									<option value="B">B</option>
@@ -219,9 +259,9 @@
 									<option value="D">D</option>
 									<option value="F">F</option>
 								</select>
-							</div>	
+							</div>
 							<div class="form-group col-sm-3">
-								<label>강의</label>
+								<label>강의</label> 
 								<select name="lactureScore" class="form-control">
 									<option value="A" selected>A</option>
 									<option value="B">B</option>
@@ -229,9 +269,9 @@
 									<option value="D">D</option>
 									<option value="F">F</option>
 								</select>
-							</div>	
+							</div>
 							<div class="form-group col-sm-3">
-								<label>친절</label>
+								<label>친절</label> 
 								<select name="kindnessScore" class="form-control">
 									<option value="A" selected>A</option>
 									<option value="B">B</option>
@@ -239,7 +279,7 @@
 									<option value="D">D</option>
 									<option value="F">F</option>
 								</select>
-							</div>	
+							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
@@ -262,7 +302,7 @@
 				<div class="modal-body">
 					<form action="./reportAction.jsp" method="post">
 						<div class="form-group">
-							<label>신고 제목</label>
+							<label>신고 제목</label> 
 							<input type="text" name="reportTitle" class="form-control" maxlength="30">
 						</div>
 						<div class="form-group">
@@ -278,8 +318,8 @@
 			</div>
 		</div>
 	</div>
-	<footer class="bg-dark mt-4 p-5 text-center" style="color: #FFFFFF;">
-		Copyright &copy; 2020 chimy All Rights Reserved.
+	<footer class="bg-dark mt-4 p-5 text-center" style="color: #FFFFFF;"> 
+		Copyright &copy; 2020 chimy All Rights Reserved. 
 	</footer>
 	<!-- 제이쿼리 자바스크립트 추가하기 -->
 	<script src="./js/jquery.min.js"></script>
