@@ -17,18 +17,18 @@ public class EvaluationDAO {
 		try {
 			conn=DatabaseUtil.getConnection();
 			pstmt=conn.prepareStatement(SQL);
-			pstmt.setString(1, evaluationDTO.getUserID());
-			pstmt.setString(2, evaluationDTO.getLectureName());
-			pstmt.setString(3, evaluationDTO.getProfessorName());
+			pstmt.setString(1, evaluationDTO.getUserID().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(2, evaluationDTO.getLectureName().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(3, evaluationDTO.getProfessorName().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
 			pstmt.setInt(4, evaluationDTO.getLectureYear());
-			pstmt.setString(5, evaluationDTO.getSemesterDivide());
-			pstmt.setString(6, evaluationDTO.getLectureDivide());
-			pstmt.setString(7, evaluationDTO.getEvaluationTitle());
-			pstmt.setString(8, evaluationDTO.getEvaluationContent());
-			pstmt.setString(9, evaluationDTO.getTotalScore());
-			pstmt.setString(10, evaluationDTO.getCreditScore());
-			pstmt.setString(11, evaluationDTO.getLectureScore());
-			pstmt.setString(12, evaluationDTO.getKindnessScore());
+			pstmt.setString(5, evaluationDTO.getSemesterDivide().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(6, evaluationDTO.getLectureDivide().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(7, evaluationDTO.getEvaluationTitle().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(8, evaluationDTO.getEvaluationContent().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(9, evaluationDTO.getTotalScore().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(10, evaluationDTO.getCreditScore().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(11, evaluationDTO.getLectureScore().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
+			pstmt.setString(12, evaluationDTO.getKindnessScore().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\r\n", "<br>"));
 			return pstmt.executeUpdate();//영향을 받은 쿼리 수 반환=1
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,5 +90,67 @@ public class EvaluationDAO {
 			try {if(rs!=null) rs.close();} catch (Exception e) {e.printStackTrace();}
 		}
 		return evaluationList;//데이터베이스 오류
+	}
+	
+	public int like(String evaluationID) {
+		String SQL="update evaluation set likeCount=likeCount+1 where evaluationID=?";
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try {
+			conn=DatabaseUtil.getConnection();
+			pstmt=conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(evaluationID));
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {if(conn!=null) conn.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(pstmt!=null) pstmt.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(rs!=null) rs.close();} catch (Exception e) {e.printStackTrace();}
+		}
+		return -1;//데이터베이스 오류
+	}
+
+	public int delete(String evaluationID) {
+		String SQL="delete from evaluation where evaluationID=?";
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try {
+			conn=DatabaseUtil.getConnection();
+			pstmt=conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(evaluationID));
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {if(conn!=null) conn.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(pstmt!=null) pstmt.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(rs!=null) rs.close();} catch (Exception e) {e.printStackTrace();}
+		}
+		return -1;//데이터베이스 오류
+	}
+	public String getUserID(String evaluationID) {
+		String SQL="select userID from evaluation where evaluationID=?";
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try {
+			conn=DatabaseUtil.getConnection();
+			pstmt=conn.prepareStatement(SQL);
+			pstmt.setInt(1, Integer.parseInt(evaluationID));
+			rs=pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getString(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {if(conn!=null) conn.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(pstmt!=null) pstmt.close();} catch (Exception e) {e.printStackTrace();}
+			try {if(rs!=null) rs.close();} catch (Exception e) {e.printStackTrace();}
+		}
+		return null;//데이터베이스 오류
 	}
 }
